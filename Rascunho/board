@@ -1,11 +1,14 @@
 import pygame
 from pygame.locals import QUIT
+from soldiers import Soldier
+
 # Defining some colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 GRAY = (128, 128, 128)
+
 # Window and board size
 WINDOW_WIDTH = 600
 WINDOW_HEIGHT = 600
@@ -16,9 +19,32 @@ class Board:
         self.rows = rows
         self.cols = cols
         self.grid = [[0 for _ in range(cols)] for _ in range(rows)]
+        self.soldiers = []  # Lista para armazenar os soldados no tabuleiro
+
+    def add_soldier(self, x, y, team):
+        self.soldiers.append(Soldier(x, y, team))  # Adiciona um novo soldado ao tabuleiro
+        # Verifica se as coordenadas estão dentro dos limites do tabuleiro
+        if 0 <= x < self.cols and 0 <= y < self.rows:
+            # Verifica se a posição está vazia (não ocupada por outro soldado)
+            if self.grid[y][x] == 0:
+                # Cria um novo soldado e adiciona à lista de soldados do tabuleiro
+                self.soldiers.append(Soldier(x, y, team))
+                # Atualiza o tabuleiro para refletir a presença do soldado
+                self.grid[y][x] = team
+            else:
+                print("Posição ocupada por outro soldado.")
+        else:
+            print("Coordenadas fora dos limites do tabuleiro.")
+
+    def move_soldier(self, start_x, start_y, end_x, end_y, team):
+        # Implemente a lógica para mover o soldado no tabuleiro
+        pass
+
     def get_possible_moves(self, player):
         possible_moves = []
-        # Add the logic to calculate possible moves for the player here
+        for soldier in self.soldiers:
+            # Adicione a lógica para calcular os possíveis movimentos dos soldados
+            pass
         return possible_moves
 class Game:
     def __init__(self):
