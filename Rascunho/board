@@ -1,0 +1,70 @@
+import pygame
+from pygame.locals import QUIT
+# Defining some colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+GRAY = (128, 128, 128)
+# Window and board size
+WINDOW_WIDTH = 600
+WINDOW_HEIGHT = 600
+BOARD_SIZE = 11
+CELL_SIZE = WINDOW_WIDTH // BOARD_SIZE
+class Board:
+    def __init__(self, rows, cols):
+        self.rows = rows
+        self.cols = cols
+        self.grid = [[0 for _ in range(cols)] for _ in range(rows)]
+    def get_possible_moves(self, player):
+        possible_moves = []
+        # Add the logic to calculate possible moves for the player here
+        return possible_moves
+class Game:
+    def __init__(self):
+        pygame.init()
+        self.window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+        pygame.display.set_caption('Jogo de Estratégia')
+        self.clock = pygame.time.Clock()
+        self.board = Board(BOARD_SIZE, BOARD_SIZE)  # Now passing a tuple with the board size
+        self.selected_soldier = None
+    def handle_click(self, pos):
+        x, y = pos[0] // CELL_SIZE, pos[1] // CELL_SIZE
+        if self.selected_soldier is None:
+            # If no soldier is selected, try to select a soldier at the clicked position
+            for soldier in self.board.get_possible_moves(1):
+                if soldier == (x, y):
+                    self.selected_soldier = soldier
+                    break
+        else:
+            # If a soldier is selected, try to move the soldier to the clicked position
+            self.board.move_soldier(*self.selected_soldier, x, y, 1)
+            self.selected_soldier = None
+    def draw_board(self):
+        self.window.fill(WHITE)
+        for y in range(BOARD_SIZE):
+            for x in range(BOARD_SIZE):
+                rect = pygame.Rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+                if self.board.grid[y][x] == 1:
+                    pygame.draw.rect(self.window, RED, rect)
+                elif self.board.grid[y][x] == 2:
+                    pygame.draw.rect(self.window, BLUE, rect)
+                else:
+                    pygame.draw.rect(self.window, GRAY, rect)
+                pygame.draw.rect(self.window, BLACK, rect, 1)
+        pygame.display.flip()
+    def run(self):
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    running = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:  # Left mouse button
+                        self.handle_click(pygame.mouse.get_pos())
+            self.draw_board()
+            self.clock.tick(30)
+        pygame.quit()
+if __name__ == "__main__":
+    game = Game()
+    game.run()
